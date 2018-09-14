@@ -1,0 +1,13 @@
+admin_login:
+    path:     /login
+    defaults: { _controller: UserBundle:Back/Security:login }
+
+admin_login_check:
+    path:     /login_check
+    defaults: { _controller: UserBundle:Back/Security:check }
+
+admin_logout:
+    path:     /logout
+    defaults: { _controller: UserBundle:Back/Security:logout }
+    requirements:
+      method: GET|POST

@@ -1,0 +1,14 @@
+# route for authentified admin users
+admin_users:
+    resource: "@UserBundle/Resources/config/back/admin.yml"
+    prefix:   /admin
+
+# route for anonymously admin users
+admin_cpanel:
+    resource: "@UserBundle/Resources/config/back/security.yml"
+    prefix:   /admin_cpanel
+
+public_user:
+    resource: "@UserBundle/Resources/config/front/public.yml"
+
+

@@ -1,0 +1,13 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: localhost
+    database_port: null
+    database_name: ma_stores
+    database_user: root
+    database_password: root
+    mailer_transport: gmail
+    mailer_host: localhost
+    mailer_user: mahdiayachi06@gmail.com
+    mailer_password: ++++++++++
+    secret: ce1e3a953cb66884285b16da9352a9cb4a535869
+    locale: fr

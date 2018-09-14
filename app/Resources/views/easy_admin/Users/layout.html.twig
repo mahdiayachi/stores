@@ -1,0 +1,78 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+{% block header %}
+    <nav class="navbar" role="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'EasyAdminBundle') }}</span>
+        </a>
+
+        <div id="header-logo">
+            {% block header_logo %}
+                <a class="logo {{ easyadmin_config('site_name')|length > 14 ? 'logo-long' }}" title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}">
+                    {{ easyadmin_config('site_name')|raw }}
+                </a>
+            {% endblock header_logo %}
+        </div>
+
+        <div class="navbar-show-site">
+			<a href="{{ path('user_login') }}" role="button" class="btn btn-info">{{ 'dashboard.show_site' | trans() }}</a>
+        </div>
+
+        <div class="navbar-custom-menu">
+        {% block header_custom_menu %}
+            {% set _logout_path = easyadmin_logout_path() %}
+            <ul class="nav navbar-nav">
+                <li class="dropdown user user-menu">
+                    {% block user_menu %}
+                        <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
+
+                        {% if app.user|default(false) == false %}
+                            <i class="hidden-xs fa fa-user-times"></i>
+                            {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+                        {% elseif not _logout_path %}
+                            <i class="hidden-xs fa fa-user"></i>
+                            {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
+                        {% else %}
+                            <div class="btn-group">
+                                <button type="button" class="btn" data-toggle="dropdown">
+                                    <i class="hidden-xs fa fa-user"></i>
+                                    {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
+                                </button>
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% block user_menu_dropdown %}
+                                        <li>
+                                            {% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+                                            {% set _request_parameters = app.request.query.all|merge(_request_parameters|default({}))|merge({
+                                                action: app.request.get('action'),
+                                                entity: _entity_config.name,
+                                                menuIndex: app.request.get('menuIndex'),
+                                                submenuIndex: app.request.get('submenuIndex'),
+                                                sortField: app.request.get('sortField', ''),
+                                                sortDirection: app.request.get('sortDirection', 'DESC'),
+                                                page: app.request.get('page', 1)
+                                            }) %}
+                                            {% set _request_parameters = _request_parameters|merge({ referer: path('easyadmin', _request_parameters)|url_encode }) %}
+                                            <a href="{{ path('admin_profile', _request_parameters|merge({id: app.user.id})) }}"><i class="fa fa-user"></i> {{ 'users.profile'|trans() }}</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ _logout_path }}"><i class="fa fa-sign-out"></i> {{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                        </li>
+                                        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                                            <li>
+                                                <a href="{{ path('easyadmin', { '_sup_ad_switch_user': '_exit' }) }}"><i class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endblock user_menu_dropdown %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endblock user_menu %}
+                </li>
+            </ul>
+        {% endblock header_custom_menu %}
+        </div>
+    </nav>
+{% endblock header %}

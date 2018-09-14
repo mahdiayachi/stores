@@ -1,0 +1,55 @@
+{% extends '@EasyAdmin/default/list.html.twig' %}
+{% block new_action %}
+    <div class="button-action">
+        <a class="{{ _action.css_class|default('') }}" href="{{ path('easyadmin', _request_parameters|merge({ action: _action.name })) }}" target="{{ _action.target }}">
+            {{ 'action.add'|trans() }}
+        </a>
+    </div>
+{% endblock new_action %}
+{% block table_body %}
+    {% for item in paginator.currentPageResults %}
+        {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+        {% set _item_id = '' ~ attribute(item, _entity_config.primary_key_field_name) %}
+        <tr data-id="{{ _item_id }}">
+            {% set username = '' %}
+            {% for field, metadata in fields %}
+                {% set isSortingField = metadata.property == app.request.get('sortField') %}
+                {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters)  %}
+                <td data-label="{{ _column_label }}" class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}">
+                    {{ easyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}
+                    {% if field == 'username' %}
+                        {% set username = easyadmin_render_field_for_list_view(_entity_config.name, item, metadata)|trim(' ')|replace({ "\n": "", "\r": "", "\t": "" }) %}
+                    {% endif %}
+                </td>
+            {% endfor %}
+
+            {% if _list_item_actions|length > 0 %}
+                {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'EasyAdminBundle') %}
+                <td data-label="{{ _column_label }}" class="actions">
+                {% block item_actions %}
+                    {% set route_name = app.request.query.get('type') == 'admin' ? 'easyadmin' : 'user_login' %}
+                    {% set target = app.request.query.get('type') == 'admin' ? '_self' : '_blank' %}
+                    
+                    <a title="{{ 'action.switch'|trans() }}" href="{{ path(route_name, {'_sup_ad_switch_user': username}) }}" target="{{ target }}">
+                        <i class="fa fa-toggle-on"></i>
+                    </a>
+                    {% include 'easy_admin/Users/includes/_actions.html.twig' with {
+                        actions: _list_item_actions,
+                        request_parameters: _request_parameters,
+                        translation_domain: _entity_config.translation_domain,
+                        trans_parameters: _trans_parameters,
+                        item_id: _item_id,
+                        action_for: 'list'
+                    } only %}
+                {% endblock item_actions %}
+                </td>
+            {% endif %}
+        </tr>
+    {% else %}
+        <tr>
+            <td class="no-results" colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
+                {{ 'search.no_results'|trans(_trans_parameters, 'EasyAdminBundle') }}
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock table_body %}

@@ -1,0 +1,104 @@
+{% set _entity_config = easyadmin_entity(app.request.query.get('entity')) %}
+{# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+{% set _entity_id = '' ~ attribute(entity, _entity_config.primary_key_field_name) %}
+{% trans_default_domain _entity_config.translation_domain %}
+{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _entity_id } %}
+
+{% extends _entity_config.templates.layout %}
+
+{% block body_id 'easyadmin-show-' ~ _entity_config.name ~ '-' ~ _entity_id %}
+{% block body_class 'show show-' ~ _entity_config.name|lower %}
+
+{% block content_title %}
+{% spaceless %}
+    {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'EasyAdminBundle') %}
+    <i class="fa fa-home breadcrumbs"></i>
+    <a href="{{ path('easyadmin') }}">Accueil</a>
+    <i class="fa fa-angle-right breadcrumbs"></i>
+    {% set title = 'Liste ' %}
+    {% if _entity_id == app.user.id %}
+        {% set title = 'users.profile'|trans() %}
+        {{ title }}
+    {% else %}
+        {% set title =  title ~ easyadmin_config('show.title')|raw %}
+            {{ title }}
+        {% set title = 'users.profile'|trans() %}
+        <i class="fa fa-angle-right breadcrumbs"></i>{{ _entity_id }}
+    {% endif %}
+{% endspaceless %}
+{% endblock %}
+
+{% block main %}
+    <div class="form-horizontal">
+        {% block show_fields %}
+            {% for field, metadata in fields %}
+                {% block show_field %}
+                    <div class="form-group field-{{ metadata.type|default('default')|lower }} {{ metadata.css_class|default('') }}">
+                        <label class="col-sm-2 control-label">
+                            {{ (metadata.label ?: field|humanize)|trans(_trans_parameters)|raw }}
+                        </label>
+                        <div class="col-sm-10">
+                            <div class="form-control">
+                                {{ easyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
+                            </div>
+
+                            {% if metadata.help|default('') != '' %}
+                                <span class="help-block"><i class="fa fa-info-circle"></i> {{ metadata.help|trans|raw }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endfor %}
+        {% endblock %}
+
+        <div class="form-group form-actions">
+            <div class="col-sm-10 col-sm-offset-2">
+            {% block item_actions %}
+                {% set _show_actions = easyadmin_get_actions_for_show_item(_entity_config.name) %}
+                {% set _request_parameters = { entity: _entity_config.name, referer: app.request.query.get('referer') } %}
+                {% if app.request.attributes.get('_route') == 'admin_profile' %}
+                    <a class="btn btn-default" href="{{ path('easyadmin') }}"><i class="fa fa-arrow-left"></i></a>
+                    <a class="btn btn-primary" title="{{ 'action.edit'|trans() }}" href="{{ path('easyadmin', _request_parameters|merge({ action: 'edit', id: _entity_id })) }}"><i class="fa fa-edit"></i>{{ 'action.edit'|trans() }}</a>
+                {% else %}
+                    {% include 'easy_admin/includes/_actions.html.twig' with {
+                        actions: _show_actions,
+                        request_parameters: _request_parameters,
+                        translation_domain: _entity_config.translation_domain,
+                        trans_parameters: _trans_parameters,
+                        item_id: _entity_id
+                    } only %}
+                {% endif %}
+            {% endblock item_actions %}
+            </div>
+        </div>
+    </div>
+
+    {% block delete_form %}
+        {{ include('@EasyAdmin/default/includes/_delete_form.html.twig', {
+            view: 'show',
+            referer: app.request.query.get('referer', ''),
+            delete_form: delete_form,
+            _translation_domain: _entity_config.translation_domain,
+            _trans_parameters: _trans_parameters,
+            _entity_config: _entity_config,
+        }, with_context = false) }}
+    {% endblock delete_form %}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function() {
+            $('a.action-delete').on('click', function(e) {
+                e.preventDefault();
+
+                $('#modal-delete').modal({ backdrop: true, keyboard: true })
+                    .off('click', '#modal-delete-button')
+                    .on('click', '#modal-delete-button', function () {
+                        $('#delete-form').trigger('submit');
+                    });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,14 @@
+# user
+user:
+    resource: "@UserBundle/Resources/config/routing.yml"
+# easy_admin
+easy_admin_bundle:
+    resource: "@EasyAdminBundle/Controller/AdminController.php"
+    type:     annotation
+    prefix:   /admin
+
+
+
+
+
+

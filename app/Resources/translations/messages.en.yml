@@ -1,0 +1,35 @@
+#Backend
+dashboard.show_site: Visit website
+Users: Customer
+
+menu.users: Customers
+
+form.fields.others: Others
+
+list.title: List 
+
+action.edit: Edit
+action.add: Add
+action.switch: Impersonation
+
+users.firstName: First Name 
+users.lastName: Last Name 
+users.name: Name
+users.address: Address
+users.phone: Phone
+users.enabled: Enabled
+users.dateRegister: Created at
+users.lastLogin: Last login
+users.username: Username
+users.email: Email
+users.profile: My Profile
+users.password: Password
+users.password_confirmation: Repeat password
+users.password_invalid_message: Your password and confirmation password do not match
+users.help: Customers list
+users.form.fields.basic_information: Basic Informations
+users.form.fields.contact_information: Contact Informations
+
+
+
+

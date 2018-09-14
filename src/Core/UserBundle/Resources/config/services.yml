@@ -1,0 +1,33 @@
+parameters:
+    session_max_idle_time: 86400
+
+services:
+    # this makes public all the services defined in this file
+    _defaults: 
+        public: false 
+  
+    Core\UserBundle\Listener\CommandRegistrationSuccessSubscriber:
+        arguments: 
+          $mailer: '@fos_user.mailer'
+          $tokenGenerator: '@fos_user.util.token_generator'
+        tags: 
+            - { name: kernel.event_subscriber }
+
+    Core\UserBundle\Listener\SessionIdleHandlerListener:
+        arguments:
+          $session: '@session'
+          $tokenStorage: '@security.token_storage'
+          $router: '@router'
+          $maxIdleTime: '%session_max_idle_time%'
+          $requestStack: '@request_stack'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 255, lazy: true }
+
+    Core\UserBundle\Listener\RedirectAuthenticated:
+        arguments:
+          $tokenStorage: '@security.token_storage'
+          $router: '@router'
+        tags:
+          # priority 255 will strength listener to be called BEFORE the security firewall ran, we will set it to <8
+          # - { name: kernel.event_listener, event: kernel.request, priority: 255 }
+            - { name: kernel.event_listener, event: kernel.request, lazy: true }

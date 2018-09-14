@@ -1,0 +1,103 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+    providers:
+        fos_userBundle:
+            id: fos_user.user_provider.username
+        fos_admin_userBundle:
+            id: fos_user.user_provider.username_email
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        admin:
+            # ^/admin is wrong : ^/admin is matched by ^/ : option1 : something like ^/(?!admin), 
+            # option2 : change the main firewall pattern to ^/user and make the main page redirect to /user.
+            pattern: ^/admin
+            form_login:
+                provider: fos_admin_userBundle
+                csrf_token_generator: security.csrf.token_manager
+                # submit the login form here
+                check_path: admin_login_check
+
+                # the user is redirected here when they need to log in
+                login_path: admin_login
+
+                # if true, forward the user to the login form instead of redirecting(display login form 
+                # on the same route ex : /admin/)
+                use_forward: true
+
+                # login success redirecting options (read further below)
+                always_use_default_target_path: false
+                # default_target_path:            admin_index
+                default_target_path:            /admin
+                use_referer:                    false
+
+                # login failure redirecting options (read further below)
+                failure_path:    admin_login
+                remember_me:    false
+            logout:
+                path:           admin_logout
+                target:         admin_login
+                invalidate_session: false
+            # allow the login page to be accessed 
+            anonymous:    true
+            switch_user:
+                # provider:             fos_admin_userBundle
+                parameter:            _sup_ad_switch_user
+                role:                 ROLE_SUPER_ADMIN
+
+        main:
+            pattern: ^/storekeeper
+            form_login:
+                provider: fos_userBundle
+                csrf_token_generator: security.csrf.token_manager
+                # submit the login form here
+                check_path: fos_user_security_check
+
+                # the user is redirected here when they need to log in
+                login_path: fos_user_security_login
+
+                # if true, forward the user to the login form instead of redirecting
+                use_forward: false
+
+                # login success redirecting options (read further below)
+                always_use_default_target_path: false
+                default_target_path:            fos_user_security_login
+                use_referer:                    false
+
+                # login failure redirecting options (read further below)
+                failure_path:    fos_user_security_login
+                remember_me:    true
+            remember_me:
+                always_remember_me: true
+                secret: "%secret%"
+            
+            logout:
+                path:           fos_user_security_logout
+                target:         fos_user_security_login
+            anonymous:    true
+    access_control:
+        # Access anonymous
+        ## if user is logged in, also have role IS_AUTHENTICATED_ANONYMOUSLY, this is role hierarchy (check for not
+        ## IS_AUTHENTICADED_FULLY ) : ends up on 403 Forbidden page (AccessDeniedException) => we will do all the logic
+        ## in the kernel request event listener.
+        # - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY && !IS_AUTHENTICADED_FULLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Access user
+        - { path: ^/storekeeper/, role: ROLE_STOREKEEPER }
+        # Access admin
+        - { path: ^/admin, role: ROLE_ADMIN }
+        - { path: ^/admin_cpanel/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin_cpanel/logout, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_USER]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]

@@ -1,0 +1,23 @@
+# parameters:
+#     session_max_idle_time: 1
+
+# services:
+#     # this makes public all the services defined in this file
+#     _defaults: 
+#         public: true 
+  
+#     Core\UserBundle\Listener\CommandRegistrationSuccessSubscriber:
+#         arguments: 
+#           $mailer: '@fos_user.mailer'
+#           $tokenGenerator: '@fos_user.util.token_generator'
+#         tags: 
+#           - { name: kernel.event_subscriber }
+
+#     Core\UserBundle\Listener\SessionIdleHandlerListener:
+#         arguments:
+#           $session: '@session'
+#           $tokenStorage: '@security.token_storage'
+#           $router: '@router'
+#           $maxIdleTime: '%session_max_idle_time%'
+#         tags:
+#           - { name: kernel.event_listener, event: kernel.request }

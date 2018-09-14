@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	{% block stylesheets %}
+		{% stylesheets
+			'plugins/bootstrap-4.0.0/css/bootstrap.min.css'
+			'back/css/main.css'
+			filter='cssrewrite' 
+			output='assetic/back.css' %}
+			<link rel="stylesheet" href="{{ asset_url }}">
+		{% endstylesheets %}
+	{% endblock %}
+</head>
+<body>
+	<div class="d-flex justify-content-center align-items-center">
+		<form action="{{ path("admin_login_check") }}" method="post">
+		    {% if csrf_token %}
+		        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+		    {% endif %}
+		    <div class="form-group">
+			    <label for="username">{{ 'security.login.username'|trans({}, 'UserBundle') }}</label>
+			    <input type="text" id="username" name="_username" placeholder="Email - Username" value="{{ last_username }}" required="required" class="form-control" />
+			</div>
+			<div class="form-group">
+			    <label for="password">{{ 'security.login.password'|trans({}, 'UserBundle') }}</label>
+			    <input type="password" id="password" name="_password" required="required" class="form-control"/>
+			</div>
+		    <button type="submit" class="btn btn-primary" id="_submit" />{{ 'security.login.submit'|trans({},'UserBundle') }}</button>
+		</form>
+	</div>
+	{% block javascripts %}
+	    {% javascripts
+			'plugins/bootstrap-4.0.0/js/bootstrap.min.js'
+			output='assetic/bootstrap.js'%}
+	        <script src="{{ asset_url }}"></script>
+	    {% endjavascripts %}
+	{% endblock %}
+</body>
+</html>

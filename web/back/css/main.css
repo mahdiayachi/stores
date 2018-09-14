@@ -1,0 +1,17 @@
+/*FORM-LOGIN */
+/*.content{
+	display: inline-block;
+	width: 250px;
+}*/
+
+/* Dashboard */
+header .navbar-show-site {
+	display: inline-block;
+    vertical-align: middle;
+    height: 50px;
+    line-height: 50px;
+}
+
+.title .breadcrumbs {
+	margin: 0px 10px;
+}

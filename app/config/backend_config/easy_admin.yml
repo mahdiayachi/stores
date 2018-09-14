@@ -1,0 +1,81 @@
+# easy_admin
+easy_admin:
+    design:
+        assets:
+            css:
+                - 'back/css/main.css'
+        menu:
+            - label: 'menu.users'
+              icon: 'users'
+              children:
+                - { label: 'menu.users.admin', icon: 'user-secret', entity: 'Users', default: true, params: { type: 'admin' } }
+                - { label: 'menu.users.user', icon: 'user', entity: 'Users', params: { type: 'user' } }
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
+    list:
+        title: '%%entity_label%%'
+        max_results: 20
+        actions:
+            - { name: 'show', icon: 'search', label: '' }
+            - { name: 'edit', icon: 'edit', label: '' }
+            - { name: 'delete', icon: 'trash-o', label: '' }
+    show:
+        title: '%%entity_label%%'
+        actions:
+            - { name: 'list', icon: 'arrow-left', css_class: 'btn btn-default' }
+            - { name: 'edit', icon: 'edit' , label: 'action.edit'}
+            - { name: 'delete', icon: 'trash-o', css_class: 'btn btn-danger', label: 'action.delete'}
+    edit:
+        title: '%%entity_label%% (#%%entity_id%%)'
+        actions:
+            - { name: 'list', icon: 'arrow-left', css_class: 'btn btn-default' }
+            - { name: 'delete', icon: 'trash-o', css_class: 'btn btn-danger', label: 'action.delete'}
+           
+            
+    entities:
+        Users:
+            class: Core\UserBundle\Entity\User
+            controller: Core\UserBundle\Controller\Back\AdminController
+            form:  # <-- 'form' is applied to both 'new' and 'edit' views
+                fields:
+                    - { type: 'group', label: 'users.form.fields.basic_information', icon: '' }
+                    - { property: 'firstName', label: 'users.firstName' }
+                    - { property: 'lastName', label: 'users.lastName' }
+                    - { property: 'username', label: 'users.username' }
+                    - { type: 'group', label: 'users.form.fields.contact_information', icon: 'address-card' }
+                    - { property: 'address', label: 'users.address' }
+                    - { property: 'phone', label: 'users.phone' }
+                    - { property: 'email', label: 'users.email' }
+                    - { property: 'plainPassword', label: 'form.password', type: 'repeated', type_options: { type: Symfony\Component\Form\Extension\Core\Type\PasswordType, first_options: { label: 'form.password' }, second_options: { label: 'form.password_confirmation' }, invalid_message: 'fos_user.password.mismatch', options: { translation_domain: 'FOSUserBundle' } } }
+                    - { type: 'group', label: 'form.fields.others', icon: 'ellipsis-h' }
+                    - { property: 'enabled', label: 'users.enabled' }
+                    # - { property: 'roles', label: 'users.roles' }
+            # help: users.help
+            label: menu.users
+            list:
+                dql_filter: "entity.roles LIKE '%%ROLE_ADMIN%%'"
+                fields:
+                    - { property: 'name', label: 'users.name' }
+                    - { property: 'username', label: 'users.username' }
+                    - { property: 'date_register', label: 'users.dateRegister' }
+                    - { property: 'lastLogin', label: 'users.lastLogin' }
+                    - { property: 'enabled', label: 'users.enabled' }
+                # if the sort order is not specified, 'DESC' is used
+                sort: 'date_register'         
+            search:
+                fields: 
+                    - { property: 'name', label: 'users.name' }
+                    - { property: 'date_register', label: 'users.dateRegister' }
+                    - { property: 'lastLogin', label: 'users.lastLogin' }
+                    - { property: 'enabled', label: 'users.enabled' }
+            show:
+                fields: 
+                    - { property: 'name', label: 'users.name' }
+                    - { property: 'date_register', label: 'users.dateRegister' }
+                    - { property: 'lastLogin', label: 'users.lastLogin' }
+                    - { property: 'enabled', label: 'users.enabled' }
+                # use an array to also define the sorting direction
+                sort: ['date_register', 'ASC']
+    site_name: 'Stores'

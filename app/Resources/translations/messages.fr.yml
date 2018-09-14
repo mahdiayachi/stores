@@ -1,0 +1,36 @@
+#Backend
+dashboard.show_site: Visiter le site web
+Users: Client
+
+menu.users: Clients
+menu.users.admin: Administrateur
+menu.users.user: Utilisateur
+
+form.fields.others: Autres
+
+list.title: List
+
+action.edit: Editer
+action.add: Ajouter
+action.switch: Imitation
+
+users.firstName: Prénom
+users.lastName: Nom
+users.name: Nom
+users.address: Adresse
+users.phone: Téléphone
+users.enabled: Actif
+users.dateRegister: Crée le
+users.lastLogin: Dérniére connexion
+users.username: Surnom
+users.email: Addresse e-mail
+users.profile: Mon Profile
+# users.password: Mot de passe
+# users.password_confirmation: Répéter le mot de passe
+# users.password_invalid_message: Votre mot de passe et votre mot de passe de confirmation ne correspondent pas
+users.help: Liste des clients
+users.form.fields.basic_information: Informations de base
+users.form.fields.contact_information: Informations de contact
+
+
+

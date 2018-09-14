@@ -1,0 +1,3 @@
+admin_profile:
+    path:     /profile
+    defaults: { _controller: UserBundle:Back/Admin:profile }
