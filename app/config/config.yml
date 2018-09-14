@@ -41,7 +41,7 @@ twig:
     form_themes:
         - 'bootstrap_4_layout.html.twig'
 
-# Doctrine Configuration
+# Doctrine Configurations
 doctrine:
     dbal:
         driver: pdo_mysql
