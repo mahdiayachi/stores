@@ -1,5 +1,5 @@
 user_login:
-    path:     /user
+    path:     /user/
     defaults: { _controller: UserBundle:Front/User:index }
 
 # fos_user_bundle

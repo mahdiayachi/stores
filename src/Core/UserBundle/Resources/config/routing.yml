@@ -4,9 +4,9 @@ admin_users:
     prefix:   /admin
 
 # route for anonymously admin users
-admin_cpanel:
-    resource: "@UserBundle/Resources/config/back/security.yml"
-    prefix:   /admin_cpanel
+# admin_cpanel:
+#     resource: "@UserBundle/Resources/config/back/security.yml"
+#     prefix:   /admin_cpanel
 
 public_user:
     resource: "@UserBundle/Resources/config/front/public.yml"
