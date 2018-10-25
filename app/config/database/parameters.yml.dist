@@ -20,3 +20,6 @@ parameters:
 
     # Default local
     locale: fr
+
+    # npm bin folder
+    npm_bin: the folder where npm will install executables
